@@ -60,8 +60,8 @@ class MainActivity : AppCompatActivity() {
 
         // Get data using addOnSuccessListener
         fireBaseDb.collection("contacts")
-                //.orderBy("id")  // Here you can also use orderBy to sort the results based on a field such as id
-                .orderBy("id", Query.Direction.DESCENDING)  // this would be used to orderBy in DESCENDING order
+                .orderBy("id")  // Here you can also use orderBy to sort the results based on a field such as id
+                //.orderBy("id", Query.Direction.DESCENDING)  // this would be used to orderBy in DESCENDING order
                 .get()
                 .addOnSuccessListener { documents ->
 
@@ -330,7 +330,7 @@ class MainActivity : AppCompatActivity() {
                         for (contact in contacts) {
                             Log.d(TAG, "Current data: $contact")
                             stringBuilder.append("ID : ${contact.id}, NAME: ${contact.name}, EMAIL:  ${contact.email}\n")
-                            showData(contact)
+                            //showData(contact)
                         }
                         // Update the textview
                         tv_contacts.text = stringBuilder.toString()
