@@ -7,8 +7,10 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.toObjects
 import kotlinx.android.synthetic.main.activity_main.*
+import java.lang.StringBuilder
 
 class MainActivity : AppCompatActivity() {
 
@@ -33,7 +35,7 @@ class MainActivity : AppCompatActivity() {
 
         // Map or Dictionary objects is used to represent your document
         val contact = hashMapOf(
-                "id" to text_id.text.toString(),
+                "id" to text_id.text.toString().toInt(),
                 "name" to text_name.text.toString(),
                 "email" to text_email.text.toString()
         )
@@ -58,8 +60,8 @@ class MainActivity : AppCompatActivity() {
 
         // Get data using addOnSuccessListener
         fireBaseDb.collection("contacts")
-                .orderBy("id")  // Here you can also use orderBy to sort the results based on a field such as id
-                //.orderBy("id", Query.Direction.DESCENDING)  // this would be used to orderBy in DESCENDING order
+                //.orderBy("id")  // Here you can also use orderBy to sort the results based on a field such as id
+                .orderBy("id", Query.Direction.DESCENDING)  // this would be used to orderBy in DESCENDING order
                 .get()
                 .addOnSuccessListener { documents ->
 
@@ -305,6 +307,7 @@ class MainActivity : AppCompatActivity() {
      * ######################### End of Alternative-2 functions ###################################
      */
 
+
     // Gets realtime updates whenever the data on the server is updated
     fun realtimeUpdateButton(view: View) {
 
@@ -316,17 +319,21 @@ class MainActivity : AppCompatActivity() {
                         return@addSnapshotListener
                     }
 
-
                     if (snapshots != null) {
-
                         // This will be called every time a document is updated
                         Log.d(TAG, "onEvent: -----------------------------")
 
+                        val stringBuilder = StringBuilder()
+                        // Convert documents to a collection of Contact
                         val contacts = snapshots.toObjects<Contact>()
+
                         for (contact in contacts) {
-                            Log.d(TAG, "Current data: ${contact}")
+                            Log.d(TAG, "Current data: $contact")
+                            stringBuilder.append("ID : ${contact.id}, NAME: ${contact.name}, EMAIL:  ${contact.email}\n")
                             showData(contact)
                         }
+                        // Update the textview
+                        tv_contacts.text = stringBuilder.toString()
                     } else {
                         Log.d(TAG, "Current data: null")
                     }
